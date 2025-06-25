@@ -35,8 +35,6 @@ We used the **EfficientNetV2B0** and **EfficientNetV2B2** architectures due to t
 
 The dataset contains labeled images of various e-waste categories. Images are resized to 224x224 and split into training and validation sets.
 
-> Note: Dataset is not included due to licensing; contact the author or replace with your own labeled dataset.
-
 ## 🧪 Training Summary
 
 ```python
