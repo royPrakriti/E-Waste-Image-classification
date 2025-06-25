@@ -30,7 +30,6 @@ We used the **EfficientNetV2B0** and **EfficientNetV2B2** architectures due to t
 - EfficientNetV2
 - Matplotlib, NumPy, Pandas
 - Google Colab for training
-- OpenCV (optional for preprocessing)
 
 ## 📊 Dataset
 
@@ -41,5 +40,5 @@ The dataset contains labeled images of various e-waste categories. Images are re
 ## 🧪 Training Summary
 
 ```python
-checkpoint = ModelCheckpoint("best_densenet_model.h5", save_best_only=True, monitor='val_accuracy', mode='max')
+checkpoint = ModelCheckpoint("ewaste_classification_prakriti.keras", save_best_only=True, monitor='val_accuracy', mode='max')
 early_stop = EarlyStopping(patience=3, restore_best_weights=True)
