@@ -1,130 +1,3 @@
-# # streamlit_3d_ui.py
-# from tensorflow.keras.applications.efficientnet_v2 import preprocess_input
-# import streamlit as st
-# import streamlit.components.v1 as components
-# from PIL import Image
-# import tensorflow as tf
-# import numpy as np
-# import tempfile
-
-# st.set_page_config(page_title="E-Waste Classifier", layout="wide")
-
-# st.markdown("""
-#     <style>
-#     .stApp {
-#         background-color: transparent;
-#     }
-#     </style>
-# """, unsafe_allow_html=True)
-
-
-# # Vanta.GLOBE background
-# components.html("""
-# <div id="vanta-bg" style="position: fixed; width: 100vw; height: 100vh; z-index: -1; top: 0; left: 0;"></div>
-
-# <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r134/three.min.js"></script>
-# <script src="https://cdn.jsdelivr.net/npm/vanta@latest/dist/vanta.globe.min.js"></script>
-
-# <script>
-#   VANTA.GLOBE({
-#     el: "#vanta-bg",
-#     mouseControls: true,
-#     touchControls: true,
-#     gyroControls: false,
-#     minHeight: 200.00,
-#     minWidth: 200.00,
-#     scale: 1.0,
-#     scaleMobile: 1.0,
-#     color: 0x10b981,
-#     backgroundColor: 0x0f172a,
-#     size: 1.0
-#   });
-# </script>
-# """, height=0)
-# # 1. Vanta.js Full-Screen Animated Background via components.html
-
-
-
-
-
-# # 2. App Title
-# st.markdown("""
-#     <h1 style='text-align: center; color: #0f766e;'>E-Waste Image Classifier 🌿</h1>
-#     <p style='text-align: center; color: #475569;'>Upload an image to classify it into one of 10 e-waste categories.</p>
-# """, unsafe_allow_html=True)
-
-# # 3. Load Model and Class Names
-# @st.cache_resource
-# def load_model():
-#     import gdown
-#     import os
-
-#     MODEL_PATH = "Efficient_classify_prakriti_improved.keras"
-#     FILE_ID = "1zwy63UPyw2PKuocnnfUa0saJopjAoy_C"
-#     MODEL_URL = f"https://drive.google.com/uc?id={FILE_ID}"
-
-#     if not os.path.exists(MODEL_PATH) or os.path.getsize(MODEL_PATH) < 1000000:
-#         with st.spinner("📦 Downloading model from Google Drive..."):
-#             try:
-#                 gdown.download(MODEL_URL, MODEL_PATH, quiet=False)
-#                 st.success(f"✅ Model downloaded ({os.path.getsize(MODEL_PATH) / 1_000_000:.2f} MB)")
-#             except Exception as e:
-#                 st.error("❌ Failed to download model file.")
-#                 raise e
-
-#     try:
-#         model = tf.keras.models.load_model(MODEL_PATH)
-#     except Exception as e:
-#         st.error("❌ Model file exists but failed to load. Likely corrupted.")
-#         raise e
-
-#     class_names = ['Battery', 'Keyboard', 'Microwave', 'Mobile', 'Mouse', 'PCB',
-#                    'Player', 'Printer', 'Television', 'Washing Machine']
-#     return model, class_names
-
-
-
-# # 4. Image Uploader
-# uploaded_file = st.file_uploader("Choose an image", type=["jpg", "jpeg", "png"])
-
-# if uploaded_file:
-#     image = Image.open(uploaded_file).convert("RGB")
-#     st.image(image, caption="Uploaded Image", use_column_width=True)
-
-#     # Preprocess and Predict
-#     img_resized = image.resize((224, 224))  # Resize to model input size
-#     img_array = np.expand_dims(np.array(img_resized), axis=0)  # Add batch dimension
-#     img_array = preprocess_input(img_array)  # Apply EfficientNet preprocessing
-
-#     preds = model.predict(img_array)[0]
-#     pred_index = np.argmax(preds)
-#     pred_class = class_names[pred_index]
-#     confidence = round(preds[pred_index] * 100, 2)
-
-#     st.success(f"🔍 Predicted Class: **{pred_class}** with **{confidence}%** confidence.")
-
-#     st.bar_chart({"Confidence (%)": preds})
-
-# # 5. 3D Model Viewer (using model-viewer via iframe)
-# st.markdown("### 🧩 3D E-Waste Item Viewer")
-# model_viewer_code = """
-# <model-viewer src="<model-viewer src="https://raw.githubusercontent.com/KhronosGroup/glTF-Sample-Models/master/2.0/BoomBox/glTF-Binary/BoomBox.glb"
-#               alt="Electronic component" auto-rotate camera-controls background-color='#ffffff'
-#               style="width: 100%; height: 500px;">
-# </model-viewer>
-# <script type="module" src="https://unpkg.com/@google/model-viewer/dist/model-viewer.min.js"></script>
-# """
-# components.html(model_viewer_code, height=500)
-
-# # Footer
-# st.markdown("""
-#     <hr>
-#     <p style='text-align: center; font-size: 0.8em; color: #888;'>
-#     Built with ❤️ using Streamlit, TensorFlow, and Three.js
-#     </p>
-# """, unsafe_allow_html=True)
-
-
 from tensorflow.keras.applications.efficientnet_v2 import preprocess_input
 import streamlit as st
 import streamlit.components.v1 as components
@@ -133,18 +6,12 @@ import tensorflow as tf
 import numpy as np
 import base64
 import os
-import urllib.request
-import tensorflow as tf
+import gdown
 
-
-# MODEL_PATH = "Efficient_classify_prakriti_improved.keras"
-# MODEL_URL = "https://drive.google.com/uc?export=download&id=1zwy63UPyw2PKuocnnfUa0saJopjAoy_C"
-
-
-# Set page layout
+# ------------------ PAGE SETUP ------------------
 st.set_page_config(page_title="E-Waste Classifier", layout="wide")
 
-# ---------- Set full app background image ----------
+# Set background image from local file
 def set_bg_from_local(image_file):
     with open(image_file, "rb") as f:
         data = f.read()
@@ -162,10 +29,10 @@ def set_bg_from_local(image_file):
         """
         st.markdown(css, unsafe_allow_html=True)
 
-# Set your background image
+# Background image
 set_bg_from_local("data-destruction.jpg")
 
-# ---------- Style ----------
+# ------------------ STYLES ------------------
 st.markdown("""
     <style>
     h1, h2, h3 {
@@ -176,10 +43,6 @@ st.markdown("""
         padding: 1em;
         border-radius: 12px;
         background-color: rgba(255, 255, 255, 0.1);
-        transition: background 0.3s ease;
-    }
-    .upload-area:hover {
-        background-color: rgba(255, 255, 255, 0.2);
     }
     .stButton>button {
         background-color: #10b981;
@@ -191,14 +54,13 @@ st.markdown("""
     </style>
 """, unsafe_allow_html=True)
 
-# ---------- Title ----------
+# ------------------ TITLE ------------------
 st.markdown("""
     <div style='text-align: center; padding: 1rem 0;'>
         <h1 style='
             color: #22d3ee;
             font-size: 3em;
             font-weight: 800;
-            text-shadow: 0 0 10px rgba(0,0,0,0.5);
             background: rgba(255, 255, 255, 0.1);
             padding: 10px 20px;
             border-radius: 12px;
@@ -210,7 +72,6 @@ st.markdown("""
             color: #f1f5f9;
             font-size: 1.2em;
             margin-top: 10px;
-            text-shadow: 0 0 5px rgba(0,0,0,0.6);
             background: rgba(0, 0, 0, 0.25);
             padding: 8px 16px;
             border-radius: 8px;
@@ -221,71 +82,56 @@ st.markdown("""
     </div>
 """, unsafe_allow_html=True)
 
-
-# ---------- Load Model ----------
+# ------------------ MODEL LOADER ------------------
 @st.cache_resource
 def load_model():
     MODEL_PATH = "Efficient_classify_prakriti_improved.keras"
-    MODEL_URL = "https://drive.google.com/uc?export=download&id=1zwy63UPyw2PKuocnnfUa0saJopjAoy_C"
-    
-    if not os.path.exists(MODEL_PATH):
-        with st.spinner("🔄 Downloading model..."):
-            urllib.request.urlretrieve(MODEL_URL, MODEL_PATH)
-    
-    model = tf.keras.models.load_model(MODEL_PATH)
+    FILE_ID = "1zwy63UPyw2PKuocnnfUa0saJopjAoy_C"
+    MODEL_URL = f"https://drive.google.com/uc?id={FILE_ID}"
+
+    if not os.path.exists(MODEL_PATH) or os.path.getsize(MODEL_PATH) < 1_000_000:
+        with st.spinner("📥 Downloading model from Google Drive..."):
+            try:
+                gdown.download(MODEL_URL, MODEL_PATH, quiet=False)
+                st.success(f"✅ Model downloaded. Size: {os.path.getsize(MODEL_PATH)/1_000_000:.2f} MB")
+            except Exception as e:
+                st.error("❌ Failed to download model.")
+                raise e
+
+    try:
+        model = tf.keras.models.load_model(MODEL_PATH)
+    except Exception as e:
+        st.error("❌ Model exists but failed to load.")
+        raise e
+
     class_names = ['Battery', 'Keyboard', 'Microwave', 'Mobile', 'Mouse', 'PCB',
                    'Player', 'Printer', 'Television', 'Washing Machine']
     return model, class_names
 
-# ✅ FIXED: Now actually load the model
 model, class_names = load_model()
 
-
-# ---------- Upload Image ----------
+# ------------------ UPLOAD IMAGE ------------------
 with st.container():
-    st.markdown("""
-        <div class='upload-area' style='
-            border: 2px dashed #10b981;
-            padding: 1em;
-            border-radius: 12px;
-            background-color: rgba(255, 255, 255, 0.1);
-            transition: background 0.3s ease;
-        '>
-    """, unsafe_allow_html=True)
-
+    st.markdown("<div class='upload-area'>", unsafe_allow_html=True)
     uploaded_file = st.file_uploader("📁 Upload an image", type=["jpg", "jpeg", "png"])
-    
     st.markdown("</div>", unsafe_allow_html=True)
 
     if uploaded_file:
         image = Image.open(uploaded_file).convert("RGB")
-
-        # Styled uploaded image header
-        st.markdown(f"""
-            <div style='
-                background: rgba(0, 0, 0, 0.4);
-                padding: 15px;
-                border-radius: 12px;
-                margin-top: 20px;
-                text-align: center;
-                box-shadow: 0 0 20px rgba(0,0,0,0.4);
-            '>
-                <h3 style='color: #f1f5f9; font-size: 1.5em;'>🖼️ Uploaded Image</h3>
-            </div>
-        """, unsafe_allow_html=True)
+        st.markdown("<h3 style='color:#f1f5f9;'>🖼️ Uploaded Image</h3>", unsafe_allow_html=True)
         st.image(image, use_column_width=True)
 
         # Preprocess and predict
         img_resized = image.resize((224, 224))
         img_array = np.expand_dims(np.array(img_resized), axis=0)
         img_array = preprocess_input(img_array)
-        preds = model.predict(img_array)[0]
 
+        preds = model.predict(img_array)[0]
         pred_index = np.argmax(preds)
         pred_class = class_names[pred_index]
         confidence = round(preds[pred_index] * 100, 2)
 
-        # Styled prediction block
+        # Prediction Output
         st.markdown(f"""
             <div style='
                 background: rgba(255, 255, 255, 0.15);
@@ -303,23 +149,12 @@ with st.container():
 
         st.bar_chart({"Confidence (%)": preds})
 
-# ---------- Optional: 3D Viewer ----------
+# ------------------ 3D VIEWER ------------------
 st.markdown("""
-    <h3 style='
-        text-align: center;
-        color: #f1f5f9;
-        font-size: 1.8em;
-        font-weight: 600;
-        text-shadow: 0 0 6px rgba(0,0,0,0.5);
-        background: rgba(0, 0, 0, 0.25);
-        padding: 10px 20px;
-        border-radius: 10px;
-        display: inline-block;
-    '>
+    <h3 style='text-align: center; color: #f1f5f9; font-size: 1.8em;'>
         🧩 3D E-Waste Item Viewer
     </h3>
 """, unsafe_allow_html=True)
-
 
 model_viewer_code = """
 <div style="position: relative; width: 100%; height: 500px; border-radius: 15px; overflow: hidden;
@@ -333,7 +168,7 @@ model_viewer_code = """
 """
 components.html(model_viewer_code, height=500)
 
-# ---------- Footer ----------
+# ------------------ FOOTER ------------------
 st.markdown("""
     <hr>
     <p style='text-align: center; font-size: 0.85em; color: #cbd5e1;'>
