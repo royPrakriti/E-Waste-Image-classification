@@ -56,31 +56,32 @@
 # # 3. Load Model and Class Names
 # @st.cache_resource
 # def load_model():
-#     import urllib.request
+#     import gdown
 #     import os
 
 #     MODEL_PATH = "Efficient_classify_prakriti_improved.keras"
-#     MODEL_URL = "https://drive.google.com/uc?export=download&id=1zwy63UPyw2PKuocnnfUa0saJopjAoy_C"
+#     FILE_ID = "1zwy63UPyw2PKuocnnfUa0saJopjAoy_C"
+#     MODEL_URL = f"https://drive.google.com/uc?id={FILE_ID}"
 
-#     if not os.path.exists(MODEL_PATH) or os.path.getsize(MODEL_PATH) < 1000000:  # <1MB means failed download
-#         with st.spinner("🔄 Downloading model from Google Drive..."):
+#     if not os.path.exists(MODEL_PATH) or os.path.getsize(MODEL_PATH) < 1000000:
+#         with st.spinner("📦 Downloading model from Google Drive..."):
 #             try:
-#                 urllib.request.urlretrieve(MODEL_URL, MODEL_PATH)
-#                 st.success("✅ Model downloaded successfully.")
-#                 st.write(f"📦 Model file size: {os.path.getsize(MODEL_PATH) / 1_000_000:.2f} MB")
+#                 gdown.download(MODEL_URL, MODEL_PATH, quiet=False)
+#                 st.success(f"✅ Model downloaded ({os.path.getsize(MODEL_PATH) / 1_000_000:.2f} MB)")
 #             except Exception as e:
-#                 st.error(f"❌ Failed to download the model: {e}")
+#                 st.error("❌ Failed to download model file.")
 #                 raise e
 
 #     try:
 #         model = tf.keras.models.load_model(MODEL_PATH)
 #     except Exception as e:
-#         st.error("❌ Model file exists but failed to load. It might be corrupted.")
+#         st.error("❌ Model file exists but failed to load. Likely corrupted.")
 #         raise e
 
 #     class_names = ['Battery', 'Keyboard', 'Microwave', 'Mobile', 'Mouse', 'PCB',
 #                    'Player', 'Printer', 'Television', 'Washing Machine']
 #     return model, class_names
+
 
 
 # # 4. Image Uploader
