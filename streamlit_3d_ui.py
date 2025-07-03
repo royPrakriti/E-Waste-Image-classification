@@ -54,7 +54,7 @@
 # """, unsafe_allow_html=True)
 
 # # 3. Load Model and Class Names
-#@st.cache_resource
+# @st.cache_resource
 # def load_model():
 #     import urllib.request
 #     import os
