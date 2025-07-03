@@ -54,15 +54,34 @@
 # """, unsafe_allow_html=True)
 
 # # 3. Load Model and Class Names
-# @st.cache_resource
-
+#@st.cache_resource
 # def load_model():
-#     model = tf.keras.models.load_model("Efficient_classify_prakriti_improved.keras")
+#     import urllib.request
+#     import os
+
+#     MODEL_PATH = "Efficient_classify_prakriti_improved.keras"
+#     MODEL_URL = "https://drive.google.com/uc?export=download&id=1zwy63UPyw2PKuocnnfUa0saJopjAoy_C"
+
+#     if not os.path.exists(MODEL_PATH) or os.path.getsize(MODEL_PATH) < 1000000:  # <1MB means failed download
+#         with st.spinner("🔄 Downloading model from Google Drive..."):
+#             try:
+#                 urllib.request.urlretrieve(MODEL_URL, MODEL_PATH)
+#                 st.success("✅ Model downloaded successfully.")
+#                 st.write(f"📦 Model file size: {os.path.getsize(MODEL_PATH) / 1_000_000:.2f} MB")
+#             except Exception as e:
+#                 st.error(f"❌ Failed to download the model: {e}")
+#                 raise e
+
+#     try:
+#         model = tf.keras.models.load_model(MODEL_PATH)
+#     except Exception as e:
+#         st.error("❌ Model file exists but failed to load. It might be corrupted.")
+#         raise e
+
 #     class_names = ['Battery', 'Keyboard', 'Microwave', 'Mobile', 'Mouse', 'PCB',
 #                    'Player', 'Printer', 'Television', 'Washing Machine']
 #     return model, class_names
 
-# model, class_names = load_model()
 
 # # 4. Image Uploader
 # uploaded_file = st.file_uploader("Choose an image", type=["jpg", "jpeg", "png"])
